@@ -430,7 +430,7 @@ Uptime: $($bootTime.days) Days, $($bootTime.hours.toString().padLeft(2,'0')):$($
             
             switch($true){
                 ($colWidth -gt 100){
-                    $this.WriteToPos("CPU%     MEM(M)     PID USER                 PRI  TIME          THRD   HNDL  Command", ($colStart + 1), $row, 'Black', 'White') | out-null
+                    $this.WriteToPos("CPU%     MEM(M)     PID USER                 PRI  TIME          THRD   HNDL   R_MB/s   W_MB/s  Command", ($colStart + 1), $row, 'Black', 'White') | out-null
                     break;
                 }
                 ($colWidth -gt 80){
@@ -463,8 +463,13 @@ Uptime: $($bootTime.days) Days, $($bootTime.hours.toString().padLeft(2,'0')):$($
                         $this.WriteToPos(  ( $ts.toString("dd\:hh\:mm\:ss") ) , ($colStart + 51), $row, 'Black', 'Gray') | out-null
                         $this.WriteToPos($perf.ThreadCount.toString().padLeft(4,' '), ($colStart + 65), $row, 'Black', 'Gray') | out-null
                         $this.WriteToPos($perf.HandleCount.toString().padLeft(5,' '), ($colStart + 71), $row, 'Black', 'Gray') | out-null
+						
+						$this.WriteToPos( [math]::round( $perf.IOReadBytesPerSec / 1MB, 2 ).toString().padLeft(8,' '), ($colStart + 77), $row, 'Black', 'Gray') | out-null
+						$this.WriteToPos( [math]::round( $perf.IOWriteBytesPerSec / 1MB, 2 ).toString().padLeft(8,' '), ($colStart + 86), $row, 'Black', 'Gray') | out-null
+						
+						
                         $cmd = ('' + $processData.commandLine)
-                        $this.WriteToPos(  $cmd.substring(0,[math]::min($cmd.length, ([console]::windowWidth - $colStart - 78  )) ), ($colStart + 78), $row, 'Black', 'White') | out-null
+                        $this.WriteToPos(  $cmd.substring(0,[math]::min($cmd.length, ([console]::windowWidth - $colStart - 96  )) ), ($colStart + 96), $row, 'Black', 'White') | out-null
                         break;
                     }
                     ($colWidth -gt 80){
@@ -561,5 +566,5 @@ Process{
 
 }
 End{
-
+	clear;
 }
